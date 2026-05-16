@@ -5,7 +5,6 @@ const borrowSchema = Joi.object({
     .required()
     .messages({
       "any.required": "Book ID is required",
-      "string.empty": "Book ID is required",
     }),
 });
 

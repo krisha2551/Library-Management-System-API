@@ -5,7 +5,6 @@ const fineSchema = Joi.object({
     .required()
     .messages({
       "any.required": "Fine ID is required",
-      "string.empty": "Fine ID is required",
     }),
 });
 

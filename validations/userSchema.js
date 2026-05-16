@@ -28,27 +28,13 @@ const userSchema = Joi.object({
 
   role: Joi.string()
     .valid("admin", "student")
-    .optional()
-    .messages({
-      "any.only": "Role must be admin or student",
-    }),
+    .optional(),
 
-  studentId: Joi.string()
-    .trim()
-    .messages({
-      "string.base": "Student ID must be string",
-    }),
+  studentId: Joi.string().trim(),
 
-  department: Joi.string()
-    .trim()
-    .messages({
-      "string.base": "Department must be string",
-    }),
+  department: Joi.string().trim(),
 
-  semester: Joi.number()
-    .messages({
-      "number.base": "Semester must be number",
-    }),
+  semester: Joi.number(),
 
   phone: Joi.string()
     .trim()
@@ -58,8 +44,6 @@ const userSchema = Joi.object({
     }),
 });
 
-
-// CREATE USER
 export const createUserSchema = userSchema.fork(
   ["name", "email", "password"],
   (field) =>
@@ -68,48 +52,12 @@ export const createUserSchema = userSchema.fork(
     })
 );
 
-
-// LOGIN
 export const loginSchema = Joi.object({
   email: Joi.string()
     .trim()
     .email()
-    .required()
-    .messages({
-      "string.email": "Enter a valid email",
-      "any.required": "Email is required",
-    }),
+    .required(),
 
   password: Joi.string()
-    .required()
-    .messages({
-      "any.required": "Password is required",
-    }),
+    .required(),
 });
-
-
-// UPDATE USER
-export const updateUserSchema = userSchema
-  .fork(
-    [
-      "name",
-      "password",
-      "studentId",
-      "department",
-      "semester",
-      "phone",
-    ],
-    (field) => field.optional()
-  )
-  .fork(["email", "role"], (field) => field.forbidden())
-  .or(
-    "name",
-    "password",
-    "studentId",
-    "department",
-    "semester",
-    "phone"
-  )
-  .messages({
-    "object.missing": "At least one field is required for update",
-  });

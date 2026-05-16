@@ -6,30 +6,30 @@ import checkRole from "../middleware/checkRole.js";
 const router = express.Router();
 
 router.get(
-  "/getStudents",
-  auth,
-  checkRole("admin"),
+  "/getStudents", 
+  auth, 
+  checkRole("admin"), 
   studentController.getAllStudents
 );
 
 router.get(
-  "/getStudent/:id",
-  auth,
-  checkRole("admin"),
+  "/getStudent/:id", 
+  auth, 
+  checkRole("admin"), 
   studentController.getStudentById
 );
 
 router.put(
-  "/updateStudent/:id",
-  auth,
-  checkRole("admin"),
+  "/updateStudent/:id", 
+  auth, 
+  checkRole("admin"), 
   studentController.updateStudent
 );
 
 router.delete(
-  "/deleteStudent/:id",
-  auth,
-  checkRole("admin"),
+  "/deleteStudent/:id", 
+  auth, 
+  checkRole("admin"), 
   studentController.deleteStudent
 );
 

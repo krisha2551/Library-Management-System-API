@@ -4,20 +4,26 @@ import HttpError from "./HttpError.js";
 
 const auth = async (req, res, next) => {
   try {
-    const token = req.headers.authorization?.split(" ")[1];
+    const authHeader = req.header("Authorization");
 
-    if (!token) {
-      throw new HttpError("Access denied. No token provided", 401);
+    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+      throw new HttpError("Authentication required", 401);
     }
+
+    const token = authHeader.replace("Bearer ", "");
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-    const user = await User.findById(decoded.id).select("-password");
+    const user = await User.findOne({
+      _id: decoded._id,
+      "tokens.token": token,
+    });
 
     if (!user) {
-      throw new HttpError("User not found", 404);
+      throw new HttpError("Invalid token", 401);
     }
 
+    req.token = token;
     req.user = user;
 
     next();

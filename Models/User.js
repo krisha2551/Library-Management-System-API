@@ -1,6 +1,7 @@
 import mongoose from "mongoose";
 import bcrypt from "bcryptjs";
 import jwt from "jsonwebtoken";
+import HttpError from "../middleware/HttpError.js";
 
 const UserSchema = new mongoose.Schema(
   {
@@ -48,6 +49,10 @@ const UserSchema = new mongoose.Schema(
       trim: true,
     },
 
+    profileImage: {
+      type: String,
+    },
+
     tokens: [
       {
         token: {
@@ -75,7 +80,7 @@ UserSchema.pre("save", async function (next) {
 });
 
 
-// Login Logic
+// Login
 UserSchema.statics.findByCredentials = async function (email, password) {
   const user = await this.findOne({ email });
 
@@ -116,7 +121,7 @@ UserSchema.methods.generateAuthToken = async function () {
 };
 
 
-// Hide fields
+// Hide sensitive data
 UserSchema.methods.toJSON = function () {
   const user = this;
   const userObject = user.toObject();

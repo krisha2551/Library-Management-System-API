@@ -1,11 +1,16 @@
 import Book from "../models/Book.js";
 import HttpError from "../middleware/HttpError.js";
 
-
-// ADD BOOK
 const addBook = async (req, res, next) => {
   try {
-    const { title, author, category, isbn, description, totalCopies } = req.body;
+    const {
+      title,
+      author,
+      category,
+      isbn,
+      description,
+      totalCopies,
+    } = req.body;
 
     const existingBook = await Book.findOne({ isbn });
 
@@ -21,10 +26,10 @@ const addBook = async (req, res, next) => {
       description,
       totalCopies,
       availableCopies: totalCopies,
+      coverImage: req.file?.path,
     });
 
     res.status(201).json({
-      success: true,
       message: "Book added successfully",
       book,
     });
@@ -34,7 +39,6 @@ const addBook = async (req, res, next) => {
 };
 
 
-// GET ALL BOOKS
 const getAllBooks = async (req, res, next) => {
   try {
     const { search, category, page = 1, limit = 10 } = req.query;
@@ -53,21 +57,13 @@ const getAllBooks = async (req, res, next) => {
       .skip((page - 1) * limit)
       .limit(Number(limit));
 
-    const totalBooks = await Book.countDocuments(filter);
-
-    res.status(200).json({
-      success: true,
-      totalBooks,
-      currentPage: Number(page),
-      books,
-    });
+    res.status(200).json(books);
   } catch (error) {
     next(error);
   }
 };
 
 
-// GET SINGLE BOOK
 const getBookById = async (req, res, next) => {
   try {
     const book = await Book.findById(req.params.id);
@@ -76,17 +72,13 @@ const getBookById = async (req, res, next) => {
       throw new HttpError("Book not found", 404);
     }
 
-    res.status(200).json({
-      success: true,
-      book,
-    });
+    res.status(200).json(book);
   } catch (error) {
     next(error);
   }
 };
 
 
-// UPDATE BOOK
 const updateBook = async (req, res, next) => {
   try {
     const book = await Book.findByIdAndUpdate(
@@ -102,18 +94,13 @@ const updateBook = async (req, res, next) => {
       throw new HttpError("Book not found", 404);
     }
 
-    res.status(200).json({
-      success: true,
-      message: "Book updated successfully",
-      book,
-    });
+    res.status(200).json(book);
   } catch (error) {
     next(error);
   }
 };
 
 
-// DELETE BOOK
 const deleteBook = async (req, res, next) => {
   try {
     const book = await Book.findByIdAndDelete(req.params.id);
@@ -123,7 +110,6 @@ const deleteBook = async (req, res, next) => {
     }
 
     res.status(200).json({
-      success: true,
       message: "Book deleted successfully",
     });
   } catch (error) {

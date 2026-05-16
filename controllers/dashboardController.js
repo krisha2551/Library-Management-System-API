@@ -3,8 +3,6 @@ import Book from "../models/Book.js";
 import Borrow from "../models/Borrow.js";
 import Fine from "../models/Fine.js";
 
-
-// ADMIN DASHBOARD
 const adminDashboard = async (req, res, next) => {
   try {
     const totalStudents = await User.countDocuments({
@@ -32,14 +30,11 @@ const adminDashboard = async (req, res, next) => {
     ]);
 
     res.status(200).json({
-      success: true,
-      dashboard: {
-        totalStudents,
-        totalBooks,
-        borrowedBooks,
-        overdueBooks,
-        totalFines: totalFines[0]?.totalAmount || 0,
-      },
+      totalStudents,
+      totalBooks,
+      borrowedBooks,
+      overdueBooks,
+      totalFines: totalFines[0]?.totalAmount || 0,
     });
   } catch (error) {
     next(error);
@@ -47,7 +42,6 @@ const adminDashboard = async (req, res, next) => {
 };
 
 
-// STUDENT DASHBOARD
 const studentDashboard = async (req, res, next) => {
   try {
     const borrowedBooks = await Borrow.countDocuments({
@@ -77,12 +71,9 @@ const studentDashboard = async (req, res, next) => {
     ]);
 
     res.status(200).json({
-      success: true,
-      dashboard: {
-        borrowedBooks,
-        dueBooks,
-        pendingFines: pendingFines[0]?.totalAmount || 0,
-      },
+      borrowedBooks,
+      dueBooks,
+      pendingFines: pendingFines[0]?.totalAmount || 0,
     });
   } catch (error) {
     next(error);

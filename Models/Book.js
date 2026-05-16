@@ -4,25 +4,25 @@ const BookSchema = new mongoose.Schema(
   {
     title: {
       type: String,
-      required: [true, "Book title is required"],
+      required: true,
       trim: true,
     },
 
     author: {
       type: String,
-      required: [true, "Author name is required"],
+      required: true,
       trim: true,
     },
 
     category: {
       type: String,
-      required: [true, "Category is required"],
+      required: true,
       trim: true,
     },
 
     isbn: {
       type: String,
-      required: [true, "ISBN is required"],
+      required: true,
       unique: true,
       trim: true,
     },
@@ -32,15 +32,19 @@ const BookSchema = new mongoose.Schema(
       trim: true,
     },
 
+    coverImage: {
+      type: String,
+    },
+
     totalCopies: {
       type: Number,
-      required: [true, "Total copies are required"],
+      required: true,
       min: 1,
     },
 
     availableCopies: {
       type: Number,
-      required: [true, "Available copies are required"],
+      required: true,
       min: 0,
     },
   },

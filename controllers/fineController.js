@@ -1,42 +1,32 @@
 import Fine from "../models/Fine.js";
 import HttpError from "../middleware/HttpError.js";
 
-
-// STUDENT OWN FINES
 const getMyFines = async (req, res, next) => {
   try {
     const fines = await Fine.find({
       studentId: req.user._id,
     }).populate("bookId");
 
-    res.status(200).json({
-      success: true,
-      fines,
-    });
+    res.status(200).json(fines);
   } catch (error) {
     next(error);
   }
 };
 
 
-// ADMIN ALL FINES
 const getAllFines = async (req, res, next) => {
   try {
     const fines = await Fine.find()
       .populate("studentId")
       .populate("bookId");
 
-    res.status(200).json({
-      success: true,
-      fines,
-    });
+    res.status(200).json(fines);
   } catch (error) {
     next(error);
   }
 };
 
 
-// MARK FINE PAID
 const payFine = async (req, res, next) => {
   try {
     const fine = await Fine.findById(req.params.id);
@@ -50,11 +40,7 @@ const payFine = async (req, res, next) => {
 
     await fine.save();
 
-    res.status(200).json({
-      success: true,
-      message: "Fine paid successfully",
-      fine,
-    });
+    res.status(200).json(fine);
   } catch (error) {
     next(error);
   }

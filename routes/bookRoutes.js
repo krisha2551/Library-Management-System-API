@@ -1,8 +1,12 @@
 import express from "express";
+
 import bookController from "../controllers/bookController.js";
+
 import auth from "../middleware/auth.js";
 import checkRole from "../middleware/checkRole.js";
 import validate from "../middleware/validate.js";
+import upload from "../middleware/upload.js";
+
 import {
   createBookSchema,
   updateBookSchema,
@@ -14,12 +18,20 @@ router.post(
   "/addBook",
   auth,
   checkRole("admin"),
+  upload.single("coverImage"),
   validate(createBookSchema),
   bookController.addBook
 );
 
-router.get("/getBooks", bookController.getAllBooks);
-router.get("/getBook/:id", bookController.getBookById);
+router.get(
+  "/getBooks", 
+  bookController.getAllBooks
+);
+
+router.get(
+  "/getBook/:id", 
+  bookController.getBookById
+);
 
 router.put(
   "/updateBook/:id",

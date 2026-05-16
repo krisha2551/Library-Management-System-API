@@ -2,10 +2,18 @@ import User from "../models/User.js";
 import HttpError from "../middleware/HttpError.js";
 
 
-// REGISTER
 const register = async (req, res, next) => {
   try {
-    const { name, email, password, role, studentId, department, semester, phone } = req.body;
+    const {
+      name,
+      email,
+      password,
+      role,
+      studentId,
+      department,
+      semester,
+      phone,
+    } = req.body;
 
     const existingUser = await User.findOne({ email });
 
@@ -22,12 +30,12 @@ const register = async (req, res, next) => {
       department,
       semester,
       phone,
+      profileImage: req.file?.path,
     });
 
     const token = await user.generateAuthToken();
 
     res.status(201).json({
-      success: true,
       message: "User registered successfully",
       user,
       token,
@@ -38,7 +46,6 @@ const register = async (req, res, next) => {
 };
 
 
-// LOGIN
 const login = async (req, res, next) => {
   try {
     const { email, password } = req.body;
@@ -48,7 +55,6 @@ const login = async (req, res, next) => {
     const token = await user.generateAuthToken();
 
     res.status(200).json({
-      success: true,
       message: "Login successful",
       user,
       token,
@@ -59,20 +65,15 @@ const login = async (req, res, next) => {
 };
 
 
-// PROFILE
 const getProfile = async (req, res, next) => {
   try {
-    res.status(200).json({
-      success: true,
-      user: req.user,
-    });
+    res.status(200).json(req.user);
   } catch (error) {
     next(error);
   }
 };
 
 
-// LOGOUT
 const logout = async (req, res, next) => {
   try {
     req.user.tokens = req.user.tokens.filter(
@@ -82,7 +83,6 @@ const logout = async (req, res, next) => {
     await req.user.save();
 
     res.status(200).json({
-      success: true,
       message: "Logout successful",
     });
   } catch (error) {

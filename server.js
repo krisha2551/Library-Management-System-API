@@ -37,7 +37,7 @@ app.use(cors());
 app.use(hpp());
 
 
-// Rate limiting
+// Rate Limiting
 app.use(rateLimiter);
 
 
@@ -57,16 +57,18 @@ app.use("/dashboard", dashboardRoutes);
 
 
 
-// Root route
+// Root Route
 app.get("/", (req, res) => {
   res.json("Hello from Library Management Server");
 });
+
 
 
 // 404 handler
 app.use((req, res, next) => {
   next(new HttpError("Requested route not found", 404));
 });
+
 
 
 // Error middleware

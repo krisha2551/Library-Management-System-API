@@ -2,9 +2,9 @@ import Borrow from "../models/Borrow.js";
 import Book from "../models/Book.js";
 import Fine from "../models/Fine.js";
 import HttpError from "../middleware/HttpError.js";
+// import sendEmail from "../utils/sendEmail.js";
+// import sendWhatsApp from "../utils/sendWhatsApp.js";
 
-
-// BORROW BOOK
 const borrowBook = async (req, res, next) => {
   try {
     const { bookId } = req.body;
@@ -16,7 +16,7 @@ const borrowBook = async (req, res, next) => {
     }
 
     if (book.availableCopies <= 0) {
-      throw new HttpError("Book is not available", 400);
+      throw new HttpError("Book not available", 400);
     }
 
     const existingBorrow = await Borrow.findOne({
@@ -26,7 +26,7 @@ const borrowBook = async (req, res, next) => {
     });
 
     if (existingBorrow) {
-      throw new HttpError("You already borrowed this book", 400);
+      throw new HttpError("Book already borrowed", 400);
     }
 
     const dueDate = new Date();
@@ -41,18 +41,26 @@ const borrowBook = async (req, res, next) => {
     book.availableCopies -= 1;
     await book.save();
 
-    res.status(201).json({
-      success: true,
-      message: "Book borrowed successfully",
-      borrow,
-    });
+    // await sendEmail(
+    //   req.user.email,
+    //   "Book Borrowed Successfully",
+    //   `<h2>You borrowed ${book.title}</h2><p>Return before ${dueDate}</p>`
+    // );
+
+    // if (req.user.phone) {
+    //   await sendWhatsApp(
+    //     req.user.phone,
+    //     `You borrowed ${book.title}. Return before ${dueDate}`
+    //   );
+    // }
+
+    res.status(201).json(borrow);
   } catch (error) {
     next(error);
   }
 };
 
 
-// RETURN BOOK
 const returnBook = async (req, res, next) => {
   try {
     const { bookId } = req.body;
@@ -94,45 +102,33 @@ const returnBook = async (req, res, next) => {
     book.availableCopies += 1;
     await book.save();
 
-    res.status(200).json({
-      success: true,
-      message: "Book returned successfully",
-      borrow,
-    });
+    res.status(200).json(borrow);
   } catch (error) {
     next(error);
   }
 };
 
 
-// BORROW HISTORY
 const getBorrowHistory = async (req, res, next) => {
   try {
     const borrows = await Borrow.find({
       studentId: req.user._id,
     }).populate("bookId");
 
-    res.status(200).json({
-      success: true,
-      borrows,
-    });
+    res.status(200).json(borrows);
   } catch (error) {
     next(error);
   }
 };
 
 
-// ADMIN ALL BORROWS
 const getAllBorrows = async (req, res, next) => {
   try {
     const borrows = await Borrow.find()
       .populate("studentId")
       .populate("bookId");
 
-    res.status(200).json({
-      success: true,
-      borrows,
-    });
+    res.status(200).json(borrows);
   } catch (error) {
     next(error);
   }
