@@ -6,11 +6,17 @@ const auth = async (req, res, next) => {
   try {
     const authHeader = req.header("Authorization");
 
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
+    if (!authHeader) {
       throw new HttpError("Authentication required", 401);
     }
 
-    const token = authHeader.replace("Bearer ", "");
+    if (!authHeader.startsWith("Bearer ")) {
+      throw new HttpError("Invalid authorization format", 401);
+    }
+
+    const token = authHeader.split(" ")[1];
+
+    // console.log("TOKEN:", token);
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
@@ -27,7 +33,17 @@ const auth = async (req, res, next) => {
     req.user = user;
 
     next();
+
   } catch (error) {
+    console.log("AUTH ERROR:", error.message);
+
+    if (
+      error.name === "JsonWebTokenError" ||
+      error.name === "TokenExpiredError"
+    ) {
+      return next(new HttpError("Invalid or expired token", 401));
+    }
+
     next(error);
   }
 };

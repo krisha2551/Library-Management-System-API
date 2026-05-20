@@ -73,6 +73,9 @@ app.use((req, res, next) => {
 
 // Error middleware
 app.use((error, req, res, next) => {
+   console.log("ERROR STACK:");
+  console.log(error);
+  
   if (res.headersSent) {
     return next(error);
   }
