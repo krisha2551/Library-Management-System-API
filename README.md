@@ -349,18 +349,3 @@ This project demonstrates:
 - Production Deployment
 - API Testing with Postman
 
----
-
-## ⭐ Portfolio Project
-
-This project is built to showcase backend development skills including:
-
-- Node.js
-- Express.js
-- MongoDB
-- JWT Authentication
-- Cloudinary
-- Twilio
-- Nodemailer
-- REST API Development
-- Deployment
