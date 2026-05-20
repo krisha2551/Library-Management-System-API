@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import User from "../models/User.js";
+import User from "../models/user.js";
 import HttpError from "./HttpError.js";
 
 const auth = async (req, res, next) => {
@@ -16,8 +16,6 @@ const auth = async (req, res, next) => {
 
     const token = authHeader.split(" ")[1];
 
-    // console.log("TOKEN:", token);
-
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
     const user = await User.findOne({
@@ -33,7 +31,6 @@ const auth = async (req, res, next) => {
     req.user = user;
 
     next();
-
   } catch (error) {
     console.log("AUTH ERROR:", error.message);
 
